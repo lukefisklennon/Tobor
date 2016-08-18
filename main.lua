@@ -23,6 +23,9 @@ function put()
 	tobor.relax()
 end
 
+--Initialise tobor
+tobor.init()
+
 --Go!
 tobor.go()
 
