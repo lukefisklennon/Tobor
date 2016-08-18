@@ -5,7 +5,7 @@ local tobor = {}
 tobor.inputs = {top=1,bottom=2,under=3}
 tobor.outs = {motorLeft=1,_motorLeft=3,motorRight=2,_motorRight=4,arm=6,_arm=10,pincerLeft=7,pincerRight=8}
 --Settings
-tobor.settings = {moveSpeed=800,armSpeed=800,turnTime=1000000,armTime=500000,relaxAngle=-20,squeezeAngle=20}
+tobor.settings = {moveSpeed=800,armSpeed=800,turnTime=1000000,armTime=500000,midAngle=100,holdAngle=-10,releaseAngle=10}
 --Environment data
 tobor.world = {cube=0,ledge=0,wall=0,_cube=0,_ledge=0,_wall=0}
 
@@ -26,18 +26,16 @@ end
 
 --Initialise pins
 function tobor.init()
-    for k,v in ipairs(tobor.inputs) do
-        gpio.mode(v,gpio.INPUT)
-    end
-    for k,v in ipairs(tobor.outs) do
-        gpio.mode(v,gpio.OUTPUT)
-    end
     pwm.setup(tobor.outs["leftMotor"],500,512)
     pwm.setup(tobor.outs["rightMotor"],500,512)
     pwm.setup(tobor.outs["arm"],500,512)
+	pwm.setup(tobor.outs["pincerLeft"],50,100)
+	pwm.setup(tobor.outs["pincerRight"],50,100)
     pwm.start(tobor.outs["leftMotor"])
     pwm.start(tobor.outs["rightMotor"])
     pwm.start(tobor.outs["arm"])
+	pwm.start(tobor.outs["pincerLeft"])
+    pwm.start(tobor.outs["pincerRight"])
 end
 
 --Read pin
@@ -50,8 +48,15 @@ tobor.out = {}
 
 --Output to servo based on angle
 function tobor.out.servo(p,a)
-    t = (a/180)*1000+1500
-    gpio.serout(tobor.outs[p],gpio.HIGH,t,function() end)
+    pwm.setduty(tobor.outs[p],a)
+end
+
+function tobor.pincerAngle(a,s)
+	b = tobor.settings[a]
+	if (s == 1)
+		b = b * -1
+	end
+	return tobor.settings.midAngle + b
 end
 
 --Output to motor based on speed
@@ -127,14 +132,14 @@ end
 
 --Squeeze pincers to hold cube
 function tobor.hold()
-    tobor.out.servo("pincerLeft",tobor.settings.relaxAngle)
-    tobor.out.servo("pincerRight",-tobor.settings.relaxAngle)
+    tobor.out.servo("pincerLeft",tobor.pincerAngle("holdAngle",0))
+    tobor.out.servo("pincerRight",tobor.pincerAngle("holdAngle",1))
 end
 
 --Relax pincers to release cube
 function tobor.release()
-    tobor.out.servo("pincerLeft",tobor.settings.squeezeAngle)
-    tobor.out.servo("pincerRight",-tobor.settings.squeezeAngle)
+    tobor.out.servo("pincerLeft",tobor.pincerAngle("releaseAngle",0))
+    tobor.out.servo("pincerRight",tobor.pincerAngle("releaseAngle",1))
 end
 
 --Check sensors
