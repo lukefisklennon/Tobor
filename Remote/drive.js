@@ -1,16 +1,16 @@
-var panels = {all:document.getElementsByClassName("panel"),drive:document.getElementById("1"),arm:document.getElementById("2")};
-var touchTypes = ["touchstart","touchmove","touchend","touchcancel"];
-var arm = {last:0};
+var enabled = false;
+var x = 0;
+var y = 0;
 
 var emit = function(event,data) {
-	x = new XMLHttpRequest();
+	xh = new XMLHttpRequest();
 	url = "?"+"event="+event
-	for (d in data) {
-		url += "&"+d+"="+data[d];
+	if (data) {
+		url += "&data="+JSON.stringify(data);
 	};
 	console.log(url);
-	x.open("GET",url,true);
-	x.send();
+	xh.open("GET",url,true);
+	xh.send();
 };
 
 var highlight = function(e,w) {
@@ -21,40 +21,31 @@ var highlight = function(e,w) {
 	};
 };
 
-var drive = function(e) {
-	if (e.type == "touchstart" || e.type == "touchmove") {
-		highlight(panels.drive,true);
-		x = e.changedTouches[0].pageX/panels.drive.offsetWidth;
-		y = e.changedTouches[0].pageY/panels.drive.offsetHeight;
-		emit("drive",{x:x,y:y})
-	};
-	if (e.type == "touchend" || e.type == "touchcancel") {
-		highlight(panels.drive,false);
-		emit("stop",{})
-	};
+var enable = function() {
+	enabled = true;
+	highlight(panels.drive,true);
+	emit("enable")
 };
 
-var arm = function(e) {
-	if (e.type == "touchstart") {
-		highlight(panels.arm,true);
-		x = e.changedTouches[0].pageX/panels.drive.offsetWidth;
-		y = e.changedTouches[0].pageY/panels.drive.offsetHeight;
-		arm.last = y;
-		emit("arm",{x:x,y:0})
-	};
-	if (e.type == "touchmove") {
-		x = e.changedTouches[0].pageX/panels.drive.offsetWidth;
-		y = e.changedTouches[0].pageY/panels.drive.offsetHeight-arm.last;
-		arm.last += y;
-		emit("arm",{x:x,y:y})
-	};
-	if (e.type == "touchend" || e.type == "touchcancel") {
-		highlight(panels.arm,false);
-		emit("release",{})
-	};
+var disable = function() {
+	enabled = false;
+	highlight(panels.drive,false);
+	emit("disable");
 };
 
-for (t in touchTypes) {
-	panels.drive.addEventListener(touchTypes[t],drive,false);
-	panels.arm.addEventListener(touchTypes[t],arm,false);
+window.ondevicemotion = function(e) {
+	y = e.accelerationIncludingGravity.x/6;
+	x = e.accelerationIncludingGravity.y/6;
+	if (x > 1) x = 1;
+	if (y > 1) y = 1;
 };
+
+setInterval(function() {
+	if (enabled) {
+		emit("control",{x:x,y:y});
+	};
+},100);
+
+surface = document.getElementById("drive");
+surface.addEventListener("touchstart",enable,false);
+surface.addEventListener("touchend",disable,false);
