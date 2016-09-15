@@ -5,8 +5,8 @@ var y = 0;
 var emit = function(event,data) {
 	xh = new XMLHttpRequest();
 	url = "?"+"event="+event
-	if (data) {
-		url += "&data="+JSON.stringify(data);
+	for (d in data) {
+		url += "&"+d+"="+data[d];
 	};
 	console.log(url);
 	xh.open("GET",url,true);
