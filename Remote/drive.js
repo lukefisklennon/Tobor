@@ -37,8 +37,8 @@ var disable = function() {
 window.ondevicemotion = function(e) {
 	y = Math.round(e.accelerationIncludingGravity.x/6*maxSpeed);
 	x = Math.round(e.accelerationIncludingGravity.y/6*maxSpeed);
-	if (x > 1) x = 1;
-	if (y > 1) y = 1;
+	if (x > maxSpeed) x = maxSpeed;
+	if (y > maxSpeed) y = maxSpeed;
 };
 
 setInterval(function() {
