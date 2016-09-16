@@ -10,7 +10,7 @@ var emit = function(data) {
 	};
 	//console.log(url);
 	//xh.open("GET",url,true);
-	xhttp.open("GET","&"+"x="+x+"&y="+y,true);
+	xh.open("GET","&"+"x="+x+"&y="+y,true);
 	xh.send();
 };
 
