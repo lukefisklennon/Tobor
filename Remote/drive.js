@@ -37,10 +37,14 @@ var disable = function() {
 };
 
 window.ondevicemotion = function(e) {
-	y = Math.round((e.accelerationIncludingGravity.x/3)*maxSpeed);
-	x = Math.round((e.accelerationIncludingGravity.y/3)*maxSpeed);
-	if (x > maxSpeed) x = maxSpeed;
-	if (y > maxSpeed) y = maxSpeed;
+	x = Math.round((e.accelerationIncludingGravity.x/3)*maxSpeed);
+	y = Math.round((e.accelerationIncludingGravity.y/3)*maxSpeed);
+	if (x > maxSpeed) {
+		x = maxSpeed;
+	};
+	if (y > maxSpeed) {
+		y = maxSpeed;
+	};
 };
 
 setInterval(function() {
