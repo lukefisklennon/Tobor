@@ -8,8 +8,9 @@ var emit = function(data) {
 	for (d in data) {
 		url += "&"+d+"="+data[d];
 	};
-	console.log(url);
-	xh.open("GET",url,true);
+	//console.log(url);
+	//xh.open("GET",url,true);
+	xhttp.open("GET","&"+"x="+x+"&y="+y,true);
 	xh.send();
 };
 
