@@ -31,12 +31,13 @@ var enable = function() {
 var disable = function() {
 	enabled = false;
 	highlight(surface,false);
-	emit({x:0,y:0});
+	x = 0;
+	y = 0;
 };
 
 window.ondevicemotion = function(e) {
-	y = Math.round(e.accelerationIncludingGravity.x/6*maxSpeed);
-	x = Math.round(e.accelerationIncludingGravity.y/6*maxSpeed);
+	y = Math.round((e.accelerationIncludingGravity.x/6)*maxSpeed);
+	x = Math.round((e.accelerationIncludingGravity.y/6)*maxSpeed);
 	if (x > maxSpeed) x = maxSpeed;
 	if (y > maxSpeed) y = maxSpeed;
 };
