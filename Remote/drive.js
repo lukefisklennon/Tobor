@@ -4,6 +4,7 @@ var y = 0;
 
 var emit = function(data) {
 	xh = new XMLHttpRequest();
+	url = "";
 	for (d in data) {
 		url += "&"+d+"="+data[d];
 	};
