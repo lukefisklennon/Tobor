@@ -1,6 +1,7 @@
 var enabled = false;
 var x = 0;
 var y = 0;
+var maxSpeed = 1024;
 
 var emit = function(data) {
 	xh = new XMLHttpRequest();
@@ -34,8 +35,8 @@ var disable = function() {
 };
 
 window.ondevicemotion = function(e) {
-	y = e.accelerationIncludingGravity.x/6;
-	x = e.accelerationIncludingGravity.y/6;
+	y = Math.round(e.accelerationIncludingGravity.x/6*maxSpeed);
+	x = Math.round(e.accelerationIncludingGravity.y/6*maxSpeed);
 	if (x > 1) x = 1;
 	if (y > 1) y = 1;
 };
