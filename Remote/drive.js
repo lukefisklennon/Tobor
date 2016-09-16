@@ -33,6 +33,7 @@ var disable = function() {
 	highlight(surface,false);
 	x = 0;
 	y = 0;
+	emit();
 };
 
 window.ondevicemotion = function(e) {
@@ -44,7 +45,7 @@ window.ondevicemotion = function(e) {
 
 setInterval(function() {
 	if (enabled) {
-		emit({x:x,y:y});
+		emit();
 	};
 },100);
 
