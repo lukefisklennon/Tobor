@@ -47,7 +47,7 @@ setInterval(function() {
 	if (enabled) {
 		emit();
 	};
-},100);
+},1000);
 
 surface = document.getElementById("drive");
 surface.addEventListener("touchstart",enable,false);
