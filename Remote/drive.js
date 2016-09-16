@@ -2,9 +2,8 @@ var enabled = false;
 var x = 0;
 var y = 0;
 
-var emit = function(event,data) {
+var emit = function(data) {
 	xh = new XMLHttpRequest();
-	url = "?"+"event="+event
 	for (d in data) {
 		url += "&"+d+"="+data[d];
 	};
@@ -23,14 +22,13 @@ var highlight = function(e,w) {
 
 var enable = function() {
 	enabled = true;
-	highlight(panels.drive,true);
-	emit("enable")
+	highlight(surface,true);
 };
 
 var disable = function() {
 	enabled = false;
-	highlight(panels.drive,false);
-	emit("disable");
+	highlight(surface,false);
+	emit({x:0,y:0});
 };
 
 window.ondevicemotion = function(e) {
@@ -42,7 +40,7 @@ window.ondevicemotion = function(e) {
 
 setInterval(function() {
 	if (enabled) {
-		emit("control",{x:x,y:y});
+		emit({x:x,y:y});
 	};
 },100);
 
